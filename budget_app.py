@@ -9,7 +9,8 @@ class Category:
         result = title_line
         for i in self.ledger:
             desc = i['description']
-            amount = str(round(i['amount'], 2))
+            amount = round(i['amount'], 2)
+            amount = f'{amount:.2f}'
             if len(desc) > 23:
                 desc = desc[:23]
             if len(amount) > 7:
@@ -30,9 +31,7 @@ class Category:
         return balance
 
     def deposit(self, amount, description=''):
-        amount = amount
-        description = description
-        entry = {'amount': amount, 'description': description}
+        entry = {'amount': float(amount), 'description': description}
         self.ledger.append(entry)
 
     def withdraw(self, amount, description=''):
@@ -78,7 +77,12 @@ def create_spend_chart(categories):
 
     # determining percentage spent by category
     for category in spend_by_category:
-        spend_by_category[category] = round(((spend_by_category[category] / total_spend) * 100) / 10) * 10
+        spend_by_category[category] = (spend_by_category[category] / total_spend) * 100
+        print(spend_by_category[category])
+        if spend_by_category[category] < 10:
+            spend_by_category[category] = 0
+        else:
+            spend_by_category[category] = round(spend_by_category[category], -1)
 
     # drawing y-axis and plotting o's
     total_line_length = len((' ' * 3 * (len(categories) - 1)) + (' ' * 4)) + 4
@@ -131,6 +135,11 @@ def create_spend_chart(categories):
                     line += '     ' + category.name[lines_written]
                 except:
                     line += '      '
+            elif category.name == categories[-1].name:
+                try:
+                    line += '  ' + category.name[lines_written] + '  '
+                except:
+                    line += '    '
             else:
                 try:
                     line += '  ' + category.name[lines_written]
@@ -141,7 +150,7 @@ def create_spend_chart(categories):
 
     return bar_chart
 
-
+'''
 food = Category("Food")
 food.deposit(1000, "initial deposit")
 food.withdraw(10.15, "groceries")
@@ -160,11 +169,10 @@ print(clothing)
 
 print(create_spend_chart([food, auto, clothing]))
 '''
+
 food = Category("Food")
 entertainment = Category("Entertainment")
 business = Category("Business")
-
-
 
 food.deposit(900, "deposit")
 entertainment.deposit(900, "deposit")
@@ -172,4 +180,5 @@ business.deposit(900, "deposit")
 food.withdraw(105.55)
 entertainment.withdraw(33.40)
 business.withdraw(10.99)
-'''
+print(food)
+print(create_spend_chart([business, food, entertainment]))
