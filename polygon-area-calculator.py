@@ -31,14 +31,22 @@ class Rectangle:
 
             return picture
 
-    def get_amount_inside(self):
-        return 'WIP'
+    def get_amount_inside(self, another_shape):
+        if another_shape.width > self.width or another_shape.height > self.height:
+            return 0
+        else:
+            width_fit = self.width // another_shape.width
+            height_fit = self.height // another_shape.height
+            return width_fit * height_fit
 
 class Square(Rectangle):
     def __init__(self, length):
         self.set_width(length)
         self.set_height(length)
 
+    def __str__(self):
+        return 'Square(side=' + str(self.width) + ')'
+    
     def set_side(self, side):
         self.__init__(side)
 
